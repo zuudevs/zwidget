@@ -1,0 +1,8 @@
+[
+{
+  "directory": "D:/Project/zwidget/build",
+  "command": "D:\\dev-tools\\LLVM\\bin\\clang-cl.exe  /nologo -TP -D_MBCS -ID:\\Project\\zwidget\\include /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od -clang:-std=c++23 -MDd -RTC1 -Zi -Wall -Wextra -Wpedantic -Wno-c++98-compat -Wno-pre-c++17-compat /FoCMakeFiles\\zwidget.dir\\src\\main.cpp.obj /FdCMakeFiles\\zwidget.dir\\ -c -- D:\\Project\\zwidget\\src\\main.cpp",
+  "file": "D:/Project/zwidget/src/main.cpp",
+  "output": "D:/Project/zwidget/build/CMakeFiles/zwidget.dir/src/main.cpp.obj"
+}
+]
