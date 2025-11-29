@@ -42,8 +42,10 @@ namespace zuu::widget {
          * @param _b Blue (0-255)
          * @param _a Alpha (0-255), default is 255 (opaque).
          */
-        template <std::integral T>
-        constexpr Color(T _r, T _g, T _b, T _a = 255) noexcept
+        template
+		 <std::integral Tr, std::integral Tg
+		 , std::integral Tb, std::integral Ta>
+        constexpr Color(Tr _r, Tg _g, Tb _b, Ta _a = 255) noexcept
             : r(static_cast<uint8_t>(_r)), g(static_cast<uint8_t>(_g))
             , b(static_cast<uint8_t>(_b)), a(static_cast<uint8_t>(_a)) {}
 
@@ -76,15 +78,15 @@ namespace zuu::widget {
         /// Using static functions/variables allows usage like `Color::red()`.
         /// @{
         [[nodiscard]] static consteval Color transparent() { return {0, 0, 0, 0}; }
-        [[nodiscard]] static consteval Color black()       { return {0, 0, 0}; }
-        [[nodiscard]] static consteval Color white()       { return {255, 255, 255}; }
-        [[nodiscard]] static consteval Color red()         { return {255, 0, 0}; }
-        [[nodiscard]] static consteval Color green()       { return {0, 255, 0}; }
-        [[nodiscard]] static consteval Color blue()        { return {0, 0, 255}; }
-        [[nodiscard]] static consteval Color yellow()      { return {255, 255, 0}; }
-        [[nodiscard]] static consteval Color cyan()        { return {0, 255, 255}; }
-        [[nodiscard]] static consteval Color magenta()     { return {255, 0, 255}; }
-        [[nodiscard]] static consteval Color gray()        { return {128, 128, 128}; }
+        [[nodiscard]] static consteval Color black()       { return {0, 0, 0, 0}; }
+        [[nodiscard]] static consteval Color white()       { return {255, 255, 255, 0}; }
+        [[nodiscard]] static consteval Color red()         { return {255, 0, 0, 0}; }
+        [[nodiscard]] static consteval Color green()       { return {0, 255, 0, 0}; }
+        [[nodiscard]] static consteval Color blue()        { return {0, 0, 255, 0}; }
+        [[nodiscard]] static consteval Color yellow()      { return {255, 255, 0, 0}; }
+        [[nodiscard]] static consteval Color cyan()        { return {0, 255, 255, 0}; }
+        [[nodiscard]] static consteval Color magenta()     { return {255, 0, 255, 0}; }
+        [[nodiscard]] static consteval Color gray()        { return {128, 128, 128, 0}; }
         /// @}
     };
 

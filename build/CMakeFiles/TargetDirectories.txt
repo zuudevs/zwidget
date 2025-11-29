@@ -1,3 +1,6 @@
 D:/Project/zwidget/build/CMakeFiles/zwidget.dir
 D:/Project/zwidget/build/CMakeFiles/edit_cache.dir
 D:/Project/zwidget/build/CMakeFiles/rebuild_cache.dir
+D:/Project/zwidget/build/CMakeFiles/list_install_components.dir
+D:/Project/zwidget/build/CMakeFiles/install.dir
+D:/Project/zwidget/build/CMakeFiles/install/local.dir

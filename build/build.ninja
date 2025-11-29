@@ -49,10 +49,29 @@ cmake_ninja_workdir = D$:\Project\zwidget\build\
 
 build cmake_object_order_depends_target_zwidget: phony || .
 
+build CMakeFiles\zwidget.dir\include\zwidget\modules\window.cpp.obj: CXX_COMPILER__zwidget_unscanned_Debug D$:\Project\zwidget\include\zwidget\modules\window.cpp || cmake_object_order_depends_target_zwidget
+  CONFIG = Debug
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od -clang:-std=c++23 -MDd -Wall -Wextra -Wpedantic -Wno-c++98-compat -Wno-pre-c++17-compat
+  INCLUDES = -ID:\Project\zwidget\include
+  OBJECT_DIR = CMakeFiles\zwidget.dir
+  OBJECT_FILE_DIR = CMakeFiles\zwidget.dir\include\zwidget\modules
+  TARGET_COMPILE_PDB = CMakeFiles\zwidget.dir\
+  TARGET_PDB = D:\Project\zwidget\bin\zwidget.pdb
+  TARGET_SUPPORT_DIR = CMakeFiles\zwidget.dir
+
+build CMakeFiles\zwidget.dir\include\zwidget\modules\render\d2d\context.cpp.obj: CXX_COMPILER__zwidget_unscanned_Debug D$:\Project\zwidget\include\zwidget\modules\render\d2d\context.cpp || cmake_object_order_depends_target_zwidget
+  CONFIG = Debug
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od -clang:-std=c++23 -MDd -Wall -Wextra -Wpedantic -Wno-c++98-compat -Wno-pre-c++17-compat
+  INCLUDES = -ID:\Project\zwidget\include
+  OBJECT_DIR = CMakeFiles\zwidget.dir
+  OBJECT_FILE_DIR = CMakeFiles\zwidget.dir\include\zwidget\modules\render\d2d
+  TARGET_COMPILE_PDB = CMakeFiles\zwidget.dir\
+  TARGET_PDB = D:\Project\zwidget\bin\zwidget.pdb
+  TARGET_SUPPORT_DIR = CMakeFiles\zwidget.dir
+
 build CMakeFiles\zwidget.dir\src\main.cpp.obj: CXX_COMPILER__zwidget_unscanned_Debug D$:\Project\zwidget\src\main.cpp || cmake_object_order_depends_target_zwidget
   CONFIG = Debug
-  DEFINES = -D_MBCS
-  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od -clang:-std=c++23 -MDd -RTC1 -Zi -Wall -Wextra -Wpedantic -Wno-c++98-compat -Wno-pre-c++17-compat
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od -clang:-std=c++23 -MDd -Wall -Wextra -Wpedantic -Wno-c++98-compat -Wno-pre-c++17-compat
   INCLUDES = -ID:\Project\zwidget\include
   OBJECT_DIR = CMakeFiles\zwidget.dir
   OBJECT_FILE_DIR = CMakeFiles\zwidget.dir\src
@@ -68,11 +87,11 @@ build CMakeFiles\zwidget.dir\src\main.cpp.obj: CXX_COMPILER__zwidget_unscanned_D
 #############################################
 # Link the executable D:\Project\zwidget\bin\zwidget.exe
 
-build D$:\Project\zwidget\bin\zwidget.exe: CXX_EXECUTABLE_LINKER__zwidget_Debug CMakeFiles\zwidget.dir\src\main.cpp.obj
+build D$:\Project\zwidget\bin\zwidget.exe: CXX_EXECUTABLE_LINKER__zwidget_Debug CMakeFiles\zwidget.dir\include\zwidget\modules\window.cpp.obj CMakeFiles\zwidget.dir\include\zwidget\modules\render\d2d\context.cpp.obj CMakeFiles\zwidget.dir\src\main.cpp.obj
   CONFIG = Debug
-  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od -MDd -RTC1 -Zi
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od -MDd
   LINK_FLAGS = /debug /INCREMENTAL /subsystem:console
-  LINK_LIBRARIES = kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib
+  LINK_LIBRARIES = user32.lib  gdi32.lib  winmm.lib  dwmapi.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib
   OBJECT_DIR = CMakeFiles\zwidget.dir
   POST_BUILD = cd .
   PRE_LINK = cd .
@@ -106,6 +125,36 @@ build CMakeFiles\rebuild_cache.util: CUSTOM_COMMAND
 
 build rebuild_cache: phony CMakeFiles\rebuild_cache.util
 
+
+#############################################
+# Utility command for list_install_components
+
+build list_install_components: phony
+
+
+#############################################
+# Utility command for install
+
+build CMakeFiles\install.util: CUSTOM_COMMAND all
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Project\zwidget\build && D:\dev-tools\CMake\bin\cmake.exe -P cmake_install.cmake"
+  DESC = Install the project...
+  pool = console
+  restat = 1
+
+build install: phony CMakeFiles\install.util
+
+
+#############################################
+# Utility command for install/local
+
+build CMakeFiles\install\local.util: CUSTOM_COMMAND all
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Project\zwidget\build && D:\dev-tools\CMake\bin\cmake.exe -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake"
+  DESC = Installing only the local directory...
+  pool = console
+  restat = 1
+
+build install\local: phony CMakeFiles\install\local.util
+
 # =============================================================================
 # Target aliases.
 
@@ -115,13 +164,6 @@ build zwidget.exe: phony D$:\Project\zwidget\bin\zwidget.exe
 
 # =============================================================================
 # Folder targets.
-
-# =============================================================================
-
-#############################################
-# Folder: D:/Project/zwidget/build
-
-build codegen: phony
 
 # =============================================================================
 

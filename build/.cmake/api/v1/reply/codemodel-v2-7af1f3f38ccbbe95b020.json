@@ -7,10 +7,11 @@
 			[
 				{
 					"build" : ".",
-					"jsonFile" : "directory-.-Debug-f6f22219c74102c3da70.json",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-84cb9a6c953105caae61.json",
 					"minimumCMakeVersion" : 
 					{
-						"string" : "4.2.0"
+						"string" : "3.20"
 					},
 					"projectIndex" : 0,
 					"source" : ".",
@@ -40,7 +41,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "zwidget::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-zwidget-Debug-e734e697ccb674988591.json",
+					"jsonFile" : "target-zwidget-Debug-0799f0bc06bb6fd42481.json",
 					"name" : "zwidget",
 					"projectIndex" : 0
 				}

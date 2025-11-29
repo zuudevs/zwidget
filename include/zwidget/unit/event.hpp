@@ -3,24 +3,21 @@
 /**
  * @file event.hpp
  * @author zuudevs (zuudevs@gmail.com)
- * @brief Type-safe event system dengan HWND encapsulation (std::variant version)
+ * @brief Type-safe event system dengan HWND encapsulation
  * @version 2.1.0
  * @date 2025-11-29
- * 
- * @details Event system yang:
- * - Menyembunyikan HWND dari user (security)
- * - Menggunakan std::variant untuk type-safe storage
- * - Auto type deduction dengan std::get dan std::visit
- * - Zero-cost abstraction dengan modern C++
  */
-
 
 #include "event/window.hpp"
 #include "event/mouse.hpp"
 #include "event/keyboard.hpp"
 #include <variant>
+#include <Windows.h>
 
 namespace zuu::widget {
+
+// Type alias untuk HWND (bisa diubah untuk cross-platform nanti)
+using EventHandle = HWND;
 
 enum class event_type : uint8_t {
     none,
@@ -35,16 +32,17 @@ struct EmptyEvent {
 };
 
 class Event {
-public :
-	using event_variant = std::variant<
+public:
+    using event_variant = std::variant<
         EmptyEvent,
         WindowEvent,
         MouseEvent,
-        KeyboardEvent> ;
+        KeyboardEvent>;
+        
 private:
-    event_variant data_ ;
-    HWND handle_ {} ;
-    event_type type_ = event_type::none ;
+    event_variant data_;
+    EventHandle handle_ = nullptr;
+    event_type type_ = event_type::none;
 
 public:
     // ============= Constructors =============
@@ -57,13 +55,13 @@ public:
     constexpr Event& operator=(Event&&) noexcept = default;
     
     // Internal constructors (used by EventDispatcher)
-    constexpr Event(WindowEvent evt, HWND h = nullptr) noexcept 
+    constexpr Event(WindowEvent evt, EventHandle h = nullptr) noexcept 
         : data_(evt), handle_(h), type_(event_type::window) {}
     
-    constexpr Event(MouseEvent evt, HWND h = nullptr) noexcept 
+    constexpr Event(MouseEvent evt, EventHandle h = nullptr) noexcept 
         : data_(evt), handle_(h), type_(event_type::mouse) {}
     
-    constexpr Event(KeyboardEvent evt, HWND h = nullptr) noexcept 
+    constexpr Event(KeyboardEvent evt, EventHandle h = nullptr) noexcept 
         : data_(evt), handle_(h), type_(event_type::keyboard) {}
 
     // ============= Type Queries =============
@@ -90,7 +88,6 @@ public:
     
     /**
      * @brief Check apakah event menyimpan tipe T
-     * @tparam T Tipe event data
      */
     template <typename T>
     [[nodiscard]] constexpr bool holds() const noexcept {
@@ -106,7 +103,7 @@ public:
 
     // ============= Handle Access =============
     
-    [[nodiscard]] constexpr const EventHandle& handle() const noexcept { 
+    [[nodiscard]] constexpr EventHandle handle() const noexcept { 
         return handle_; 
     }
 
@@ -114,13 +111,6 @@ public:
     
     /**
      * @brief Get reference ke event data (std::get style)
-     * @tparam T Tipe event data (WindowEvent, MouseEvent, KeyboardEvent)
-     * @return Reference ke event data
-     * @throws std::bad_variant_access jika tipe salah
-     * 
-     * @example
-     * auto& mouse = event.get<MouseEvent>();
-     * auto& window = std::get<WindowEvent>(event);  // juga bisa!
      */
     template <typename T>
     [[nodiscard]] constexpr T& get() & {
@@ -144,10 +134,6 @@ public:
 
     // ============= Data Access - By Index =============
     
-    /**
-     * @brief Get by index (std::variant style)
-     * @tparam I Index (0=EmptyEvent, 1=WindowEvent, 2=MouseEvent, 3=KeyboardEvent)
-     */
     template <std::size_t I>
     [[nodiscard]] constexpr auto& get() & {
         return std::get<I>(data_);
@@ -172,13 +158,6 @@ public:
     
     /**
      * @brief Get pointer (nullptr jika tipe salah) - std::get_if style
-     * @tparam T Tipe event data
-     * @return Pointer atau nullptr (safe, no throw)
-     * 
-     * @example
-     * if (auto* mouse = event.get_if<MouseEvent>()) {
-     *     // Use mouse safely
-     * }
      */
     template <typename T>
     [[nodiscard]] constexpr T* get_if() noexcept {
@@ -193,24 +172,7 @@ public:
     // ============= Visitation (std::visit Style) =============
     
     /**
-     * @brief Visit pattern untuk type-safe dispatch (std::visit style)
-     * @param visitor Callable dengan overload untuk setiap tipe event
-     * 
-     * @example
-     * std::visit([](auto&& arg) {
-     *     using T = std::decay_t<decltype(arg)>;
-     *     if constexpr (std::is_same_v<T, MouseEvent>) {
-     *         // Handle mouse
-     *     }
-     * }, event);
-     * 
-     * // Atau dengan overload helper:
-     * event.visit(overload{
-     *     [](const WindowEvent& e) { ... },
-     *     [](const MouseEvent& e) { ... },
-     *     [](const KeyboardEvent& e) { ... },
-     *     [](const EmptyEvent&) { ... }
-     * });
+     * @brief Visit pattern untuk type-safe dispatch
      */
     template <typename Visitor>
     constexpr decltype(auto) visit(Visitor&& visitor) & {
@@ -234,10 +196,6 @@ public:
 
     // ============= Direct Variant Access =============
     
-    /**
-     * @brief Get underlying variant
-     * @note Advanced use only - untuk compatibility dengan std::variant functions
-     */
     [[nodiscard]] constexpr event_variant& variant() & noexcept { 
         return data_; 
     }
@@ -263,10 +221,6 @@ public:
 
 // ============= std::variant ADL Support =============
 
-/**
- * @brief std::get overload untuk Event (ADL support)
- * Memungkinkan std::get<T>(event) syntax
- */
 template <typename T>
 [[nodiscard]] constexpr T& get(Event& e) {
     return e.get<T>();
@@ -287,9 +241,6 @@ template <typename T>
     return std::move(e).get<T>();
 }
 
-/**
- * @brief std::get_if overload untuk Event (ADL support)
- */
 template <typename T>
 [[nodiscard]] constexpr T* get_if(Event* e) noexcept {
     return e ? e->get_if<T>() : nullptr;
@@ -300,9 +251,6 @@ template <typename T>
     return e ? e->get_if<T>() : nullptr;
 }
 
-/**
- * @brief std::visit overload untuk Event (ADL support)
- */
 template <typename Visitor>
 constexpr decltype(auto) visit(Visitor&& visitor, Event& e) {
     return e.visit(std::forward<Visitor>(visitor));
@@ -323,26 +271,13 @@ constexpr decltype(auto) visit(Visitor&& visitor, const Event&& e) {
     return std::move(e).visit(std::forward<Visitor>(visitor));
 }
 
-/**
- * @brief std::holds_alternative overload untuk Event
- */
 template <typename T>
 [[nodiscard]] constexpr bool holds_alternative(const Event& e) noexcept {
     return e.holds<T>();
 }
 
-// ============= Overload Helper (std::visit compatible) =============
+// ============= Overload Helper =============
 
-/**
- * @brief Helper untuk visitor overload pattern
- * Compatible dengan std::visit
- * 
- * @example
- * event.visit(overload{
- *     [](int i) { ... },
- *     [](double d) { ... }
- * });
- */
 template <typename... Fs>
 struct overload : Fs... {
     using Fs::operator()...;
@@ -353,47 +288,42 @@ overload(Fs...) -> overload<Fs...>;
 
 // ============= Helper Functions =============
 
-/**
- * @brief Factory functions untuk pembuatan event
- * @details Simplifikasi pembuatan event tanpa constructor langsung
- */
-
 [[nodiscard]] inline constexpr Event make_window_event(
-    event_state::window state,
-    HWND handle = nullptr
+    window_state state,
+    EventHandle handle = nullptr
 ) noexcept {
     return Event(WindowEvent{state}, handle);
 }
 
 [[nodiscard]] inline constexpr Event make_window_event(
-    event_state::window state,
-    basic_size<int> size,
-    HWND handle = nullptr
+    window_state state,
+    Size size,
+    EventHandle handle = nullptr
 ) noexcept {
     return Event(WindowEvent{state, size}, handle);
 }
 
 [[nodiscard]] inline constexpr Event make_mouse_event(
-    event_state::mouse state,
-    basic_point<int> pos,
-    HWND handle = nullptr
+    mouse_state state,
+    Pointf pos,
+    EventHandle handle = nullptr
 ) noexcept {
     return Event(MouseEvent{state, pos}, handle);
 }
 
 [[nodiscard]] inline constexpr Event make_mouse_event(
-    event_state::mouse state,
-    event_state::mouse_button button,
-    basic_point<int> pos,
-    HWND handle = nullptr
+    mouse_state state,
+    mouse_button button,
+    Pointf pos,
+    EventHandle handle = nullptr
 ) noexcept {
     return Event(MouseEvent{state, button, pos}, handle);
 }
 
 [[nodiscard]] inline constexpr Event make_keyboard_event(
-    event_state::keyboard state,
+    keyboard_state state,
     uint32_t key_code,
-    HWND handle = nullptr
+    EventHandle handle = nullptr
 ) noexcept {
     return Event(KeyboardEvent{state, key_code}, handle);
 }
@@ -403,7 +333,6 @@ overload(Fs...) -> overload<Fs...>;
 // ============= std::variant_size and std::variant_alternative Support =============
 
 namespace std {
-    // Expose Event as variant-like type untuk generic programming
     template <>
     struct variant_size<zuu::widget::Event> 
         : std::integral_constant<std::size_t, 4> {};
@@ -412,4 +341,4 @@ namespace std {
     struct variant_alternative<I, zuu::widget::Event> {
         using type = std::variant_alternative_t<I, typename zuu::widget::Event::event_variant>;
     };
-}
+} // namespace std

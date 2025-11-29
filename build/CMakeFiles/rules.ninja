@@ -30,7 +30,7 @@ rule CXX_COMPILER__zwidget_unscanned_Debug
 # Rule for linking CXX executable.
 
 rule CXX_EXECUTABLE_LINKER__zwidget_Debug
-  command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\dev-tools\CMake\bin\cmake.exe -E vs_link_exe --msvc-ver=1944 --intdir=$OBJECT_DIR --rc=D:\dev-tools\LLVM\bin\llvm-rc.exe --mt=D:\dev-tools\LLVM\bin\llvm-mt.exe --manifests $MANIFESTS -- D:\dev-tools\LLVM\bin\lld-link.exe /nologo $in  /out:$TARGET_FILE /implib:$TARGET_IMPLIB /pdb:$TARGET_PDB /version:0.0 -machine:x64 $LINK_FLAGS $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
+  command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && D:\dev-tools\CMake\bin\cmake.exe -E vs_link_exe --msvc-ver=1944 --intdir=$OBJECT_DIR --rc=D:\dev-tools\LLVM\bin\llvm-rc.exe --mt=D:\dev-tools\LLVM\bin\llvm-mt.exe --manifests $MANIFESTS -- D:\dev-tools\LLVM\bin\lld-link.exe /nologo $in  /out:$TARGET_FILE /implib:$TARGET_IMPLIB /pdb:$TARGET_PDB /version:0.0 $LINK_FLAGS $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
 

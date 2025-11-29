@@ -1154,6 +1154,30 @@
 			"value" : "FALSE"
 		},
 		{
+			"name" : "ZWIDGET_BUILD_EXAMPLES",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Build examples"
+				}
+			],
+			"type" : "BOOL",
+			"value" : "ON"
+		},
+		{
+			"name" : "ZWIDGET_BUILD_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Build zwidget as a library"
+				}
+			],
+			"type" : "BOOL",
+			"value" : "OFF"
+		},
+		{
 			"name" : "zwidget_BINARY_DIR",
 			"properties" : 
 			[
