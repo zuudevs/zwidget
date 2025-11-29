@@ -4,17 +4,16 @@
  * @file rect.hpp
  * @author zuudevs (zuudevs@gmail.com)
  * @brief Defines the basic_rect class for 2D geometry.
- * @version 1.0
- * @date 2025-11-28
+ * @version 1.1
+ * @date 2025-11-29
  * 
  * @details This header provides a generic rectangle structure defined by an
- * origin point (top-left) and a size (width/height). It includes essential
- * geometric utilities like hit-testing (contains) and intersection checks.
+ * origin point (top-left) and a size (width/height). 
+ * Includes saturated arithmetic safety via basic_size integration.
  */
 
 #include "zwidget/unit/point.hpp"
 #include "zwidget/unit/size.hpp"
-#include <algorithm> // Required for std::max, std::min
 
 namespace zuu::widget {
 
@@ -63,12 +62,13 @@ namespace zuu::widget {
          : pos(_pos), size(_size) {}
         
         /**
-         * @brief Explicit constructor from a single scalar value.
-         * Creates a square at (val, val) with size (val, val).
+         * @brief Constructs a rectangle from a Size object only.
+         * Sets position to (0, 0) by default.
+         * @param _size The size of the rectangle.
          */
-        template <_meta::Numeric T>
-        explicit constexpr basic_rect(T val) noexcept
-         : pos(val), size(val) {}
+        template <_meta::Numeric TS>
+        explicit constexpr basic_rect(const basic_size<TS>& _size) noexcept
+         : pos(0, 0), size(_size) {}
 
         /// @}
 
@@ -83,16 +83,16 @@ namespace zuu::widget {
         constexpr Tpos top() const noexcept { return pos.y; }
 
         /// @brief Returns the X coordinate of the right edge (x + width).
-        constexpr Tpos right() const noexcept { return pos.x + static_cast<Tpos>(size.x); }
+        constexpr Tpos right() const noexcept { return pos.x + static_cast<Tpos>(size.w); }
 
         /// @brief Returns the Y coordinate of the bottom edge (y + height).
-        constexpr Tpos bottom() const noexcept { return pos.y + static_cast<Tpos>(size.y); }
+        constexpr Tpos bottom() const noexcept { return pos.y + static_cast<Tpos>(size.h); }
 
         /// @brief Returns the width of the rectangle.
-        constexpr Tsize width() const noexcept { return size.x; }
+        constexpr Tsize width() const noexcept { return size.w; }
 
         /// @brief Returns the height of the rectangle.
-        constexpr Tsize height() const noexcept { return size.y; }
+        constexpr Tsize height() const noexcept { return size.h; }
 
         /**
          * @brief Calculates the center point of the rectangle.
@@ -100,8 +100,8 @@ namespace zuu::widget {
          */
         constexpr basic_point<Tpos> center() const noexcept {
             return basic_point<Tpos>(
-                pos.x + static_cast<Tpos>(size.x / 2),
-                pos.y + static_cast<Tpos>(size.y / 2)
+                pos.x + static_cast<Tpos>(size.w / 2),
+                pos.y + static_cast<Tpos>(size.h / 2)
             );
         }
 
@@ -140,7 +140,7 @@ namespace zuu::widget {
          * @brief Checks if this rectangle is completely empty (width or height <= 0).
          */
         constexpr bool is_empty() const noexcept {
-            return size.x <= 0 || size.y <= 0;
+            return size.has_zero() ;
         }
 
         /// @}
@@ -155,17 +155,172 @@ namespace zuu::widget {
         constexpr operator basic_rect<TP, TS>() const noexcept {
             return basic_rect<TP, TS>{
                 static_cast<basic_point<TP>>(pos), 
-                static_cast<basic_size<TS>>(size) // FIXED: Was casting to basic_size<TP>
+                static_cast<basic_size<TS>>(size)
             };
         }
         /// @}
 
+        // --- Compound Assignments ---
+        // Note: These rely on basic_point and basic_size implementations.
+        // basic_size handles clamping on subtraction automatically.
+
+        template <_meta::Numeric TP, _meta::Numeric TS>
+        constexpr basic_rect& operator+=(const basic_rect<TP, TS>& other) noexcept {
+            pos += other.pos ;
+            size += other.size ;
+            return *this ;
+        }
+
+        template <_meta::Numeric TP, _meta::Numeric TS>
+        constexpr basic_rect& operator-=(const basic_rect<TP, TS>& other) noexcept {
+            pos -= other.pos ;
+            size -= other.size ;
+            return *this ;
+        }
+
+        template <_meta::Numeric TP, _meta::Numeric TS>
+        constexpr basic_rect& operator*=(const basic_rect<TP, TS>& other) noexcept {
+            pos *= other.pos ;
+            size *= other.size ;
+            return *this ;
+        }
+
+        template <_meta::Numeric TP, _meta::Numeric TS>
+        constexpr basic_rect& operator/=(const basic_rect<TP, TS>& other) noexcept {
+            pos /= other.pos ;
+            size /= other.size ;
+            return *this ;
+        }
+
+        template <_meta::Numeric T>
+        constexpr basic_rect& operator+=(T val) noexcept {
+            pos += val ;
+            size += val ;
+            return *this ;
+        }
+
+        template <_meta::Numeric T>
+        constexpr basic_rect& operator-=(T val) noexcept {
+            pos -= val ;
+            size -= val ;
+            return *this ;
+        }
+
+        template <_meta::Numeric T>
+        constexpr basic_rect& operator*=(T val) noexcept {
+            pos *= val ;
+            size *= val ;
+            return *this ;
+        }
+
+        template <_meta::Numeric T>
+        constexpr basic_rect& operator/=(T val) noexcept {
+            pos /= val ;
+            size /= val ;
+            return *this ;
+        }
     };
 
+    /**
+     * @brief Deduction Guide: Point + Size
+     */
+    template <typename Tpos, typename Tsize>
+    basic_rect(basic_point<Tpos>, basic_size<Tsize>) -> basic_rect<Tpos, Tsize>;
+
+    /**
+     * @brief Deduction Guide: Raw Coordinates (x, y, w, h)
+     * Deducts type based on x/y for position and w/h for size.
+     */
+    template <typename Tx, typename Ty, typename Tw, typename Th>
+    basic_rect(Tx, Ty, Tw, Th) -> basic_rect<std::common_type_t<Tx, Ty>, std::common_type_t<Tw, Th>>;
+
+    /**
+     * @name Global Binary Operators (Rect vs Rect)
+     * @{
+     */
+    template <_meta::Numeric TPlhs, _meta::Numeric TSlhs
+            , _meta::Numeric TPrhs, _meta::Numeric TSrhs>
+    constexpr auto operator+(const basic_rect<TPlhs, TSlhs>& lhs, const basic_rect<TPrhs, TSrhs>& rhs) noexcept {
+        return basic_rect{ lhs.pos + rhs.pos, lhs.size + rhs.size };
+    }
+
+    template <_meta::Numeric TPlhs, _meta::Numeric TSlhs
+            , _meta::Numeric TPrhs, _meta::Numeric TSrhs>
+    constexpr auto operator-(const basic_rect<TPlhs, TSlhs>& lhs, const basic_rect<TPrhs, TSrhs>& rhs) noexcept {
+        return basic_rect{ lhs.pos - rhs.pos, lhs.size - rhs.size };
+    }
+
+    template <_meta::Numeric TPlhs, _meta::Numeric TSlhs
+            , _meta::Numeric TPrhs, _meta::Numeric TSrhs>
+    constexpr auto operator*(const basic_rect<TPlhs, TSlhs>& lhs, const basic_rect<TPrhs, TSrhs>& rhs) noexcept {
+        return basic_rect{ lhs.pos * rhs.pos, lhs.size * rhs.size };
+    }
+
+    template <_meta::Numeric TPlhs, _meta::Numeric TSlhs
+            , _meta::Numeric TPrhs, _meta::Numeric TSrhs>
+    constexpr auto operator/(const basic_rect<TPlhs, TSlhs>& lhs, const basic_rect<TPrhs, TSrhs>& rhs) noexcept {
+        return basic_rect{ lhs.pos / rhs.pos, lhs.size / rhs.size };
+    }
+    /// @}
+
+    /**
+     * @name Global Binary Operators (Rect vs Scalar)
+     * @{
+     */
+    template<_meta::Numeric TPlhs, _meta::Numeric TSlhs, _meta::Numeric Trhs>
+    constexpr auto operator+(const basic_rect<TPlhs, TSlhs>& lhs, Trhs rhs) noexcept {
+        return basic_rect{ lhs.pos + rhs, lhs.size + rhs };
+    }
+
+    template<_meta::Numeric TPlhs, _meta::Numeric TSlhs, _meta::Numeric Trhs>
+    constexpr auto operator-(const basic_rect<TPlhs, TSlhs>& lhs, Trhs rhs) noexcept {
+        return basic_rect{ lhs.pos - rhs, lhs.size - rhs };
+    }
+
+    template<_meta::Numeric TPlhs, _meta::Numeric TSlhs, _meta::Numeric Trhs>
+    constexpr auto operator*(const basic_rect<TPlhs, TSlhs>& lhs, Trhs rhs) noexcept {
+        return basic_rect{ lhs.pos * rhs, lhs.size * rhs };
+    }
+
+    template<_meta::Numeric TPlhs, _meta::Numeric TSlhs, _meta::Numeric Trhs>
+    constexpr auto operator/(const basic_rect<TPlhs, TSlhs>& lhs, Trhs rhs) noexcept {
+        return basic_rect{ lhs.pos / rhs, lhs.size / rhs };
+    }
+    /// @}
+
+    /**
+     * @name Global Binary Operators (Scalar vs Rect)
+     * @{
+     */
+    template<_meta::Numeric Tlhs, _meta::Numeric TPrhs, _meta::Numeric TSrhs>
+    constexpr auto operator+(Tlhs lhs, const basic_rect<TPrhs, TSrhs>& rhs) noexcept {
+        return rhs + lhs ;
+    }
+
+    template<_meta::Numeric Tlhs, _meta::Numeric TPrhs, _meta::Numeric TSrhs>
+    constexpr auto operator*(Tlhs lhs, const basic_rect<TPrhs, TSrhs>& rhs) noexcept {
+        return rhs * lhs ;
+    }
+
+    // Note: Scalar - Rect doesn't make geometric sense usually, but mathematically checks out
+    // resulting in (Scalar - Pos, Scalar - Size).
+    template<_meta::Numeric Tlhs, _meta::Numeric TPrhs, _meta::Numeric TSrhs>
+    constexpr auto operator-(Tlhs lhs, const basic_rect<TPrhs, TSrhs>& rhs) noexcept {
+        // Warning: This constructs a temporary rect where pos=(lhs,lhs) and size=(lhs,lhs)
+        // Then subtracts rhs.
+        return basic_rect(lhs, lhs, lhs, lhs) - rhs;
+    }
+
+    template<_meta::Numeric Tlhs, _meta::Numeric TPrhs, _meta::Numeric TSrhs>
+    constexpr auto operator/(Tlhs lhs, const basic_rect<TPrhs, TSrhs>& rhs) noexcept {
+        return basic_rect(lhs, lhs, lhs, lhs) / rhs;
+    }
+    /// @}
+
     /// @brief Type alias for a rectangle with integer coordinates and dimensions.
-    using rect = basic_rect<int, int>;
+    using Rect = basic_rect<int, int>;
 
     /// @brief Type alias for a rectangle with float coordinates and dimensions.
-    using rectf = basic_rect<float, float>;
+    using Rectf = basic_rect<float, float>;
 
 } // namespace zuu::widget

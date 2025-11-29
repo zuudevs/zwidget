@@ -8,7 +8,7 @@
  * @date 2025-11-28
  */
 
-#include <compare>
+#include <algorithm>
 #include <cstdint>
 #include <concepts>
 
@@ -75,17 +75,32 @@ namespace zuu::widget {
         /// Standard HTML/CSS colors usually needed in UI development.
         /// Using static functions/variables allows usage like `Color::red()`.
         /// @{
-        static consteval Color transparent() { return {0, 0, 0, 0}; }
-        static consteval Color black()       { return {0, 0, 0}; }
-        static consteval Color white()       { return {255, 255, 255}; }
-        static consteval Color red()         { return {255, 0, 0}; }
-        static consteval Color green()       { return {0, 255, 0}; }
-        static consteval Color blue()        { return {0, 0, 255}; }
-        static consteval Color yellow()      { return {255, 255, 0}; }
-        static consteval Color cyan()        { return {0, 255, 255}; }
-        static consteval Color magenta()     { return {255, 0, 255}; }
-        static consteval Color gray()        { return {128, 128, 128}; }
+        [[nodiscard]] static consteval Color transparent() { return {0, 0, 0, 0}; }
+        [[nodiscard]] static consteval Color black()       { return {0, 0, 0}; }
+        [[nodiscard]] static consteval Color white()       { return {255, 255, 255}; }
+        [[nodiscard]] static consteval Color red()         { return {255, 0, 0}; }
+        [[nodiscard]] static consteval Color green()       { return {0, 255, 0}; }
+        [[nodiscard]] static consteval Color blue()        { return {0, 0, 255}; }
+        [[nodiscard]] static consteval Color yellow()      { return {255, 255, 0}; }
+        [[nodiscard]] static consteval Color cyan()        { return {0, 255, 255}; }
+        [[nodiscard]] static consteval Color magenta()     { return {255, 0, 255}; }
+        [[nodiscard]] static consteval Color gray()        { return {128, 128, 128}; }
         /// @}
     };
 
+	[[nodiscard]] inline constexpr Color rgba(
+		std::unsigned_integral auto r,
+		std::unsigned_integral auto g,
+		std::unsigned_integral auto b,
+		std::floating_point auto a = decltype(a){1}
+	) noexcept {
+		return {
+			static_cast<uint8_t>(r > 255 ? 255 : r),
+			static_cast<uint8_t>(g > 255 ? 255 : g),
+			static_cast<uint8_t>(b > 255 ? 255 : b),
+			static_cast<uint8_t>(
+				decltype(a){255} * std::clamp(a, decltype(a){0}, decltype(a){1})
+			)
+		} ;
+	}
 } // namespace zuu::widget
