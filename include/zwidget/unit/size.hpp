@@ -13,6 +13,7 @@
  */
 
 #include <concepts>
+#include <compare>
 #include "zwidget/concept/numeric.hpp"
 
 namespace zuu::_meta {

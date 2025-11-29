@@ -12,6 +12,7 @@
  * type safety for numeric operations.
  */
 
+#include <compare>
 #include "zwidget/concept/numeric.hpp"
 
 namespace zuu::widget {
