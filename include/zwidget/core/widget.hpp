@@ -13,7 +13,6 @@
 #include "zwidget/unit/align.hpp"
 #include <memory>
 #include <vector>
-#include <functional>
 
 namespace zuu::widget {
 
@@ -35,7 +34,7 @@ enum class WidgetState : uint32_t {
     focused    = 1 << 2,
     hovered    = 1 << 3,
     pressed    = 1 << 4,
-    dirty      = 1 << 5,  // Needs repaint
+    dirty      = 1 << 5  // Needs repaint
 };
 
 inline constexpr WidgetState operator|(WidgetState a, WidgetState b) {

@@ -14,6 +14,9 @@
 #include <variant>
 #include <Windows.h>
 
+#undef min
+#undef max
+
 namespace zuu::widget {
 
 // Type alias untuk HWND (bisa diubah untuk cross-platform nanti)
