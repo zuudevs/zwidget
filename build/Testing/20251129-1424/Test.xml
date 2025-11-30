@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Site BuildName="(empty)"
+	BuildStamp="20251129-1424-Experimental"
+	Name="(empty)"
+	Generator="ctest-4.2.0-rc1"
+	CompilerName=""
+	CompilerVersion=""
+	OSName="Windows"
+	Hostname="Rafi-Indra"
+	OSRelease="10.0.26100"
+	OSVersion="Windows 10"
+	OSPlatform="AMD64"
+	Is64Bits="1"
+	VendorString="AuthenticAMD"
+	VendorID="Advanced Micro Devices"
+	FamilyID="15"
+	ModelID="8"
+	ModelName="AMD Ryzen 5 5500U with Radeon Graphics"
+	ProcessorCacheSize="64"
+	NumberOfLogicalCPU="12"
+	NumberOfPhysicalCPU="6"
+	TotalVirtualMemory="20257"
+	TotalPhysicalMemory="7560"
+	LogicalProcessorsPerPhysical="2"
+	ProcessorClockFrequency="2100"
+	>
+	<Testing>
+		<StartDateTime>Nov 29 21:24 SE Asia Standard Time</StartDateTime>
+		<StartTestTime>1764426272</StartTestTime>
+		<TestList/>
+		<EndDateTime>Nov 29 21:24 SE Asia Standard Time</EndDateTime>
+		<EndTestTime>1764426272</EndTestTime>
+		<ElapsedMinutes>0</ElapsedMinutes>
+	</Testing>
+</Site>

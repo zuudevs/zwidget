@@ -1,8 +1,6 @@
 # ninja log v7
 11	2140	7861257650607802	CMakeFiles/zwidget.dir/include/zwidget/core/window.cpp.obj	93b193a4cbf038d5
-3	2414	7861257650522336	CMakeFiles/zwidget.dir/src/main.cpp.obj	5adafe3c84ba32bf
-2415	3568	7861257674642580	D:/Project/zwidget/bin/zwidget.exe	baaa4b09dcf69eb9
-26	2163	7861289705615518	CMakeFiles/zwidget.dir/include/zwidget/modules/render/d2d/context.cpp.obj	4058a75ee01a046a
-8	2169	7861289705441893	CMakeFiles/zwidget.dir/include/zwidget/modules/window.cpp.obj	e104433d2ae76b97
 36	3182	7861289705714298	CMakeFiles/zwidget.dir/src/main.cpp.obj	5adafe3c84ba32bf
 3182	4127	7861289737168500	D:/Project/zwidget/bin/zwidget.exe	b11b3e204d299151
+26	2163	7861289705615518	CMakeFiles/zwidget.dir/include/zwidget/modules/render/d2d/context.cpp.obj	4058a75ee01a046a
+8	2169	7861289705441893	CMakeFiles/zwidget.dir/include/zwidget/modules/window.cpp.obj	e104433d2ae76b97
