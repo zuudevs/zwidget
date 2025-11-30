@@ -24,12 +24,12 @@ Phase 2: Rendering ✅
 
 Phase 3: Widgets
 
-- [ ] Button
-- [ ] Label
-- [ ] TextBox
-- [ ] CheckBox
+- [x] Button
+- [x] Label
+- [x] TextBox
+- [x] CheckBox
 - [ ] RadioButton
-- [ ] Slider
+- [x] Slider
 - [ ] ScrollBar
 - [ ] ComboBox
 - [ ] ListView
@@ -37,8 +37,8 @@ Phase 3: Widgets
 
 Phase 4: Layout
 
-- [ ] HBox (horizontal layout)
-- [ ] VBox (vertical layout)
+- [x] HBox (horizontal layout)
+- [x] VBox (vertical layout)
 - [ ] Grid layout
 - [ ] Stack layout
 - [ ] Constraint-based layout
